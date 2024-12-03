@@ -14,7 +14,6 @@ export const createProduct = (
   next: NextFunction
 ) => {
   const { description, image, title, category, price } = req.body;
-
   return Product.create({ description, image, title, category, price }).then(
     (product) => res.status(200).send({ item: product })
   );
