@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Product from "../models/product";
 import { faker } from "@faker-js/faker";
+import BadRequestError from "../errors/bad-request";
 
 export const orderProduct = async (
   req: Request,
@@ -17,11 +18,11 @@ export const orderProduct = async (
     );
 
     if (products.length === 0) {
-      throw new Error("Empty order");
+      return next(new BadRequestError("Empty order"));
     }
 
     if (filteredProducts.length !== items.length) {
-      throw new Error("Wrong order");
+      return next(new BadRequestError("Wrong order"));
     }
 
     const totalSum = filteredProducts.reduce(
@@ -30,12 +31,12 @@ export const orderProduct = async (
     );
 
     if (totalSum !== total) {
-      throw new Error("Wrong total sum");
+      return next(new BadRequestError("Wrong total sum"));
     }
 
     return res.status(200).send({ id: faker.string.uuid(), total: totalSum });
   } catch (err) {
-    console.error(err);
+    return next(err);
   }
 };
 
